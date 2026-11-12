@@ -1,0 +1,120 @@
+body {
+  font-family: sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-height: 100dvh;
+  /* padding: 20px; */
+  background-color: #ccd;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 1096px;
+  padding: 53px 70px;
+  background-color: #fff;
+  transform-origin: top;
+  transform: scale(0.7);
+}
+
+.title {
+  margin-bottom: 15px;
+  font-size: 28px;
+  letter-spacing: 6px;
+  font-weight: 400;
+}
+
+.img {
+  align-self: center;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  /* max-height: 400px; */
+  /* object-fit: contain; */
+  cursor: pointer;
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 17px;
+}
+
+.main_price, .main_price * {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 54px !important;
+  font-weight: 500 !important;
+  line-height: 98% !important;
+}
+
+.delimiter {
+  width: 100%;
+  height: 1px;
+  margin-top: 25px;
+  background-color: #000;
+}
+
+.props {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 10px;
+}
+
+.prop {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 160px;
+  padding: 8px 0;
+}
+
+.prop__value, .prop__value * {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.prop__name, .prop__name *{
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #00000077 !important;
+  letter-spacing: 0.4px !important;
+}
+
+.delimiter_vert {
+  width: 2px;
+  background-color: #00000044;
+}
+
+.download{
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: block;
+  padding: 0;
+  border: none;
+  background-color: unset;
+  cursor: pointer;
+}
+
+.download .bg{
+  position: absolute;
+  inset: 5px;
+  background-color: #fff;
+  border-radius: 50%;
+  z-index: -1;
+}
