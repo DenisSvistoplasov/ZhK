@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = await html2canvas(layout, {
       useCORS: true,
       logging: true,
+      scale: 1 / 0.76
     });
 
     const link = document.createElement('a');
@@ -59,7 +60,7 @@ const MIN_IMG_SCALE = 2;
 
 function resizeImage(img) {
   const {naturalWidth, naturalHeight} = img;
-  console.log('{naturalWidth, naturalHeight} : ', {naturalWidth, naturalHeight} );
+  console.log('{naturalWidth, naturalHeight} : ', {naturalWidth, naturalHeight});
 
   const scale = Math.min(
     MAX_IMG_WIDTH / naturalWidth,
