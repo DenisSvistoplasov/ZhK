@@ -8,7 +8,7 @@ body {
   align-items: center;
   gap: 20px;
   min-height: 100dvh;
-  /* padding: 20px; */
+  padding-top: 10px;
   background-color: #ccd;
 }
 
@@ -39,6 +39,12 @@ body {
   /* max-height: 400px; */
   /* object-fit: contain; */
   cursor: pointer;
+}
+
+.img.drag-over {
+  outline: 10px solid #c6f;
+  outline-offset: -10px;
+  opacity: .5;
 }
 
 .prices {

@@ -51,6 +51,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setImage(img, URL.createObjectURL(file));
   });
+
+  // DnD image file
+  document.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    const items = event.dataTransfer.items;
+    const hasImage = [...items].some(item =>
+      item.kind === 'file' && item.type.startsWith('image/')
+    );
+
+    img.classList.toggle('drag-over', hasImage);
+  });
+
+  document.addEventListener('dragleave', () => {
+    img.classList.remove('drag-over');
+  });
+
+  document.addEventListener('drop', (event) => {
+    event.preventDefault();
+    img.classList.remove('drag-over');
+
+    const file = event.dataTransfer.files[0];
+
+    if (!file || !file.type.startsWith('image/')) return;
+
+    const url = URL.createObjectURL(file);
+    setImage(img, url);
+  });
 });
 
 
@@ -60,7 +87,6 @@ const MIN_IMG_SCALE = 2;
 
 function resizeImage(img) {
   const {naturalWidth, naturalHeight} = img;
-  console.log('{naturalWidth, naturalHeight} : ', {naturalWidth, naturalHeight});
 
   const scale = Math.min(
     MAX_IMG_WIDTH / naturalWidth,
@@ -72,7 +98,6 @@ function resizeImage(img) {
     newWidth: naturalWidth * scale,
     newHeight: naturalHeight * scale
   };
-  console.log('{newWidth, newHeight}: ', {newWidth, newHeight});
 
   img.style.width = `${naturalWidth * scale}px`;
   img.style.height = `${naturalHeight * scale}px`;
