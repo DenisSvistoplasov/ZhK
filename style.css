@@ -56,13 +56,37 @@ body {
   margin-bottom: 17px;
 }
 
-.main_price, .main_price * {
+.main-price,
+.main-price * {
   display: flex;
   align-items: center;
   gap: 15px;
   font-size: 54px !important;
   font-weight: 500 !important;
   line-height: 98% !important;
+}
+
+.old-price,
+.old-price * {
+  font-size: 24px !important;
+  font-weight: 500 !important;
+  line-height: 98% !important;
+  color: #999;
+  text-align: right;
+}
+
+.old-price__value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: line-through !important;
+}
+.old-price__description {
+  font-size: 20px !important;
+}
+
+.hidden.hidden {
+  display: none;
 }
 
 .delimiter {
@@ -88,13 +112,16 @@ body {
   padding: 8px 0;
 }
 
-.prop__value, .prop__value * {
+.prop__value,
+.prop__value * {
   font-size: 20px !important;
   font-weight: 600 !important;
   text-align: center;
   letter-spacing: 0.3px;
 }
-.prop__name, .prop__name *{
+
+.prop__name,
+.prop__name * {
   font-size: 14px !important;
   font-weight: 600 !important;
   color: #00000077 !important;
@@ -106,10 +133,20 @@ body {
   background-color: #00000044;
 }
 
-.download{
+.controls {
   position: fixed;
   top: 10px;
   right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.download {
+  position: relative;
+  width: 50px;
+  height: 50px;
   display: block;
   padding: 0;
   border: none;
@@ -117,10 +154,60 @@ body {
   cursor: pointer;
 }
 
-.download .bg{
+.download .bg {
   position: absolute;
   inset: 5px;
   background-color: #fff;
   border-radius: 50%;
   z-index: -1;
+}
+
+.add-old-price,
+.add-old-price-description {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  cursor: pointer;
+
+}
+
+.add-old-price-description {
+
+}
+
+.checkbox-appearance {
+  --width: 30px;
+  --ratio: calc(20 / 35);
+  --height: calc(var(--width) * var(--ratio));
+  --padding: 2px;
+
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+  border-radius: 20px;
+  background-color: #cdf;
+  box-shadow: inset 1px 1px 3px #00000033;
+}
+
+.checkbox-appearance::after {
+  content: '';
+  position: absolute;
+  top: var(--padding);
+  left: var(--padding);
+  width: calc(var(--height) - var(--padding) * 2);
+  height: calc(var(--height) - var(--padding) * 2);
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 1px 2px 2px #00000055, inset -1px -2px 4px #00000033;
+  transform: translateX(0);
+  transition: .2s ease-in-out;
+}
+
+input:checked~.checkbox-appearance {
+  background-color: #58f;
+}
+
+input:checked~.checkbox-appearance::after {
+  transform: translateX(calc(var(--width) - var(--height)));
 }

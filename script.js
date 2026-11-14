@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const img = document.querySelector('.img');
   const download = document.querySelector('.download');
   const fileInput = document.querySelector('#fileInput');
+  const oldPrice = document.querySelector('.old-price');
+  const oldPriceDescription = document.querySelector('.old-price__description');
+  const addOldPriceCheckbox = document.querySelector('.add-old-price>input');
+  const addOldPriceDescriptionLabel = document.querySelector('.add-old-price-description');
+  const addOldPriceDescriptionCheckbox = document.querySelector('.add-old-price-description>input');
 
   // Download
   download.addEventListener('click', async () => {
@@ -77,6 +82,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const url = URL.createObjectURL(file);
     setImage(img, url);
+  });
+
+
+  // Add old price
+  addOldPriceCheckbox.addEventListener('change', () => {
+    oldPrice.classList.toggle('hidden', !addOldPriceCheckbox.checked);
+    addOldPriceDescriptionLabel.classList.toggle('hidden', !addOldPriceCheckbox.checked);
+  });
+  addOldPriceDescriptionCheckbox.addEventListener('change', () => {
+    oldPriceDescription.classList.toggle('hidden', !addOldPriceDescriptionCheckbox.checked);
   });
 });
 
