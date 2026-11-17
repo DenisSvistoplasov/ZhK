@@ -93,6 +93,19 @@ document.addEventListener('DOMContentLoaded', () => {
   addOldPriceDescriptionCheckbox.addEventListener('change', () => {
     oldPriceDescription.classList.toggle('hidden', !addOldPriceDescriptionCheckbox.checked);
   });
+
+  // Auto select-all on focus
+  document.querySelectorAll('[contenteditable]').forEach((el) => {
+    el.addEventListener('focus', () => {
+      const selection = window.getSelection();
+      const range = document.createRange();
+
+      range.selectNodeContents(el);
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+    });
+  });
 });
 
 
