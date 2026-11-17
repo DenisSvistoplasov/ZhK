@@ -31,15 +31,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  // Paste image
+  // Img 1. Paste image
   document.addEventListener('paste', (event) => {
     const items = event.clipboardData.items;
 
     for (const item of items) {
       if (item.type.startsWith('image/')) {
         const file = item.getAsFile();
-        const url = URL.createObjectURL(file);
-        setImage(img, url);
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const imageData = reader.result;
+          setImage(img, imageData);
+          save();
+        };
+        reader.readAsDataURL(file);
+
         event.preventDefault();
         break;
       }
@@ -47,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  // Choose image file
+  // Img 2. Choose image file
   img.addEventListener('click', () => {
     fileInput.click();
   });
@@ -55,10 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
   fileInput.addEventListener('change', () => {
     const file = fileInput.files[0];
     if (!file) return;
-    setImage(img, URL.createObjectURL(file));
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageData = reader.result;
+      setImage(img, imageData);
+      save();
+    };
+    reader.readAsDataURL(file);
   });
 
-  // DnD image file
+  // Img 3. DnD image file
   document.addEventListener('dragover', (event) => {
     event.preventDefault();
     const items = event.dataTransfer.items;
@@ -81,8 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!file || !file.type.startsWith('image/')) return;
 
-    const url = URL.createObjectURL(file);
-    setImage(img, url);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageData = reader.result;
+      setImage(img, imageData);
+      save();
+    };
+    reader.readAsDataURL(file);
   });
 
 
@@ -90,6 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
   addOldPriceCheckbox.addEventListener('change', () => {
     oldPrice.classList.toggle('hidden', !addOldPriceCheckbox.checked);
     addOldPriceDescriptionLabel.classList.toggle('hidden', !addOldPriceCheckbox.checked);
+    if (!addOldPriceCheckbox.checked) {
+      addOldPriceDescriptionCheckbox.checked = false;
+      addOldPriceDescriptionCheckbox.dispatchEvent(new Event('change', {bubbles: true}));
+    }
   });
   addOldPriceDescriptionCheckbox.addEventListener('change', () => {
     oldPriceDescription.classList.toggle('hidden', !addOldPriceDescriptionCheckbox.checked);
@@ -117,6 +140,53 @@ document.addEventListener('DOMContentLoaded', () => {
       document.execCommand('insertText', false, text);
     });
   });
+
+  document.addEventListener('input', save);
+
+  function save() {
+    const data = {
+      title: document.querySelector('.title').textContent,
+      img: img.src,
+      price: document.querySelector('.main-price > [contenteditable]').textContent,
+      isOldPrice: addOldPriceCheckbox.checked,
+      oldPrice: document.querySelector('.old-price__value > [contenteditable]').textContent,
+      isOldPriceDescription: addOldPriceDescriptionCheckbox.checked,
+      oldPriceDescription: document.querySelector('.old-price__description').textContent,
+      props: Array.from(document.querySelectorAll('.prop')).map(prop =>
+      ({
+        value: prop.querySelector('.prop__value').textContent,
+        name: prop.querySelector('.prop__name').textContent
+      }))
+    };
+
+    console.log('data: ', data);
+
+    localStorage.setItem('data', JSON.stringify(data));
+  }
+
+  function load() {
+    const data = JSON.parse(localStorage.getItem('data'));
+    
+    setImage(img, data?.img || './apartment1.webp');
+
+    if (!data) return;
+
+    document.querySelector('.title').textContent = data.title;
+    document.querySelector('.main-price > [contenteditable]').textContent = data.price;
+    addOldPriceCheckbox.checked = data.isOldPrice;
+    addOldPriceCheckbox.dispatchEvent(new Event('change', {bubbles: true}));
+    document.querySelector('.old-price__value > [contenteditable]').textContent = data.oldPrice;
+    addOldPriceDescriptionCheckbox.checked = data.isOldPriceDescription;
+    addOldPriceDescriptionCheckbox.dispatchEvent(new Event('change', {bubbles: true}));
+    document.querySelector('.old-price__description').textContent = data.oldPriceDescription;
+    data.props.forEach((prop, i) => {
+      const propEl = document.querySelectorAll('.prop')[i];
+      propEl.querySelector('.prop__value').textContent = prop.value;
+      propEl.querySelector('.prop__name').textContent = prop.name;
+    });
+  }
+
+  load();
 });
 
 
@@ -151,3 +221,4 @@ function setImage(img, url) {
 
   img.src = url;
 }
+
