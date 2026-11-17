@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = await html2canvas(layout, {
       useCORS: true,
       logging: true,
-      scale: 1 / 0.76
+      scale: 1 / 0.76,
     });
 
     const link = document.createElement('a');

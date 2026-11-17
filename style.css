@@ -76,11 +76,22 @@ body {
 }
 
 .old-price__value {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  text-decoration: line-through !important;
 }
+.old-price__value:before{
+  content:'';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  margin-top: -1px;
+  background-color: currentColor;
+}
+
 .old-price__description {
   font-size: 20px !important;
 }
@@ -172,9 +183,7 @@ body {
 
 }
 
-.add-old-price-description {
-
-}
+.add-old-price-description {}
 
 .checkbox-appearance {
   --width: 30px;
