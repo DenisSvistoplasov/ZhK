@@ -20,7 +20,7 @@ body {
   padding: 53px 70px;
   background-color: #fff;
   transform-origin: top;
-  transform: scale(0.67);
+  transform: scale(var(--scale));
 }
 
 .title {
@@ -81,8 +81,9 @@ body {
   align-items: center;
   gap: 10px;
 }
-.old-price__value:before{
-  content:'';
+
+.old-price__value:before {
+  content: '';
   position: absolute;
   top: 50%;
   left: 0;
@@ -129,6 +130,10 @@ body {
   font-weight: 600 !important;
   text-align: center;
   letter-spacing: 0.3px;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 
 .prop__name,

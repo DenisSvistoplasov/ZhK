@@ -1,5 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+const SCALE = 0.76;
 
+document.addEventListener('DOMContentLoaded', () => {
   const layout = document.querySelector('.layout');
   const img = document.querySelector('.img');
   const download = document.querySelector('.download');
@@ -9,17 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const addOldPriceCheckbox = document.querySelector('.add-old-price>input');
   const addOldPriceDescriptionLabel = document.querySelector('.add-old-price-description');
   const addOldPriceDescriptionCheckbox = document.querySelector('.add-old-price-description>input');
+  const roomsValueEl = document.querySelector('#rooms');
+  const projectValueEl = document.querySelector('#project');
+
+  layout.style.setProperty('--scale', SCALE);
 
   // Download
   download.addEventListener('click', async () => {
     const canvas = await html2canvas(layout, {
       useCORS: true,
       logging: true,
-      scale: 1 / 0.76,
+      scale: 1 / SCALE,
     });
 
     const link = document.createElement('a');
-    link.download = 'result.png';
+    link.download = `${projectValueEl.textContent}, ${roomsValueEl.textContent}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 
@@ -34,9 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (item.type.startsWith('image/')) {
         const file = item.getAsFile();
         const url = URL.createObjectURL(file);
-
         setImage(img, url);
-
         event.preventDefault();
         break;
       }
@@ -51,9 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fileInput.addEventListener('change', () => {
     const file = fileInput.files[0];
-
     if (!file) return;
-
     setImage(img, URL.createObjectURL(file));
   });
 
@@ -112,33 +113,35 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('paste', (event) => {
       event.preventDefault();
       let text = event.clipboardData.getData('text');
-      if (text.endsWith('₽')) text = text.slice(0, -1);
+      if (text.endsWith('₽')) text = text.slice(0, -1).trim();
       document.execCommand('insertText', false, text);
     });
   });
 });
 
 
-const MAX_IMG_WIDTH = 956;
-const MAX_IMG_HEIGHT = 720;
+const BASE_IMG_WIDTH = 956;
+const BASE_IMG_HEIGHT = 720;
 const MIN_IMG_SCALE = 2;
 
 function resizeImage(img) {
   const {naturalWidth, naturalHeight} = img;
 
-  const scale = Math.min(
-    MAX_IMG_WIDTH / naturalWidth,
-    MAX_IMG_HEIGHT / naturalHeight,
+  let scale = Math.min(
+    BASE_IMG_WIDTH / naturalWidth,
+    BASE_IMG_HEIGHT / naturalHeight,
     MIN_IMG_SCALE
   );
+
+  if (scale > 1) scale **= 0.8;
 
   const {newWidth, newHeight} = {
     newWidth: naturalWidth * scale,
     newHeight: naturalHeight * scale
   };
 
-  img.style.width = `${naturalWidth * scale}px`;
-  img.style.height = `${naturalHeight * scale}px`;
+  img.style.width = `${newWidth}px`;
+  img.style.height = `${newHeight}px`;
 }
 
 function setImage(img, url) {
