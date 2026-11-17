@@ -106,6 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
       selection.addRange(range);
     });
   });
+
+  // Paste price
+  document.querySelectorAll('.main-price > [contenteditable], .old-price__value > [contenteditable]').forEach((el) => {
+    el.addEventListener('paste', (event) => {
+      event.preventDefault();
+      let text = event.clipboardData.getData('text');
+      if (text.endsWith('₽')) text = text.slice(0, -1);
+      document.execCommand('insertText', false, text);
+    });
+  });
 });
 
 
