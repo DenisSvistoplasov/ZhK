@@ -225,3 +225,70 @@ input:checked~.checkbox-appearance {
 input:checked~.checkbox-appearance::after {
   transform: translateX(calc(var(--width) - var(--height)));
 }
+
+.history-list {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  box-shadow: 0 0 5px #00000044;
+}
+.history-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  max-width: 200px;
+  padding: 5px 2px 5px 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s ease-in-out;
+}
+.history-item:hover{
+  background-color: #cdf;
+}
+
+.history-item .delete-btn{
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  color: #fdd;
+  border: unset;
+  border-radius: 4px;
+  background-color: #a00;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .2s ease-in-out;
+}
+
+.history-item .delete-btn:hover{
+  background-color: #d33;
+
+}
+
+.history-item .delete-btn::before{
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 14px;
+  height: 2px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+.history-item .delete-btn::after{
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  width: 14px;
+  height: 2px;
+  border-radius: 4px;
+  background-color: #fff;
+}

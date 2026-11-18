@@ -1,4 +1,6 @@
 const SCALE = 0.76;
+const LAST_DATA_KEY = 'LAST_DATA_KEY';
+const HISTORY_KEY = 'HISTORY_KEY';
 
 document.addEventListener('DOMContentLoaded', () => {
   const layout = document.querySelector('.layout');
@@ -12,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addOldPriceDescriptionCheckbox = document.querySelector('.add-old-price-description>input');
   const roomsValueEl = document.querySelector('#rooms');
   const projectValueEl = document.querySelector('#project');
+  const historyListEl = document.querySelector('.history-list');
 
   layout.style.setProperty('--scale', SCALE);
 
@@ -28,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = canvas.toDataURL('image/png');
     link.click();
 
+    saveInHistory();
+    drawHistoryList();
   });
 
 
@@ -43,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = () => {
           const imageData = reader.result;
           setImage(img, imageData);
-          save();
+          saveLastData();
         };
         reader.readAsDataURL(file);
 
@@ -67,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.onload = () => {
       const imageData = reader.result;
       setImage(img, imageData);
-      save();
+      saveLastData();
     };
     reader.readAsDataURL(file);
   });
@@ -99,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.onload = () => {
       const imageData = reader.result;
       setImage(img, imageData);
-      save();
+      saveLastData();
     };
     reader.readAsDataURL(file);
   });
@@ -141,9 +146,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.addEventListener('input', save);
+  // Paste square
+  document.querySelector('.prop.square>.prop__value>[contenteditable]').addEventListener('paste', (event) => {
+    event.preventDefault();
+    let text = event.clipboardData.getData('text');
+    if (text.endsWith('м2') || text.endsWith('м²')) text = text.slice(0, -2).trim();
+    document.execCommand('insertText', false, text);
+  });
 
-  function save() {
+
+  document.addEventListener('input', saveLastData);
+
+  // History
+  function drawHistoryList() {
+    const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+    historyListEl.innerHTML = '';
+    history.forEach(data => {
+      const historyItem = document.createElement('div');
+      historyItem.classList.add('history-item');
+      historyItem.textContent = data.props[0].value + ',' + data.props[2].value;
+      historyItem.addEventListener('click', () => {
+        load(data);
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        history.splice(history.indexOf(data), 1);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        historyItem.remove();
+      });
+
+      historyItem.appendChild(deleteBtn);
+      historyListEl.appendChild(historyItem);
+    });
+  }
+
+  drawHistoryList();
+
+  function getCurrentData() {
     const data = {
       title: document.querySelector('.title').textContent,
       img: img.src,
@@ -154,19 +196,33 @@ document.addEventListener('DOMContentLoaded', () => {
       oldPriceDescription: document.querySelector('.old-price__description').textContent,
       props: Array.from(document.querySelectorAll('.prop')).map(prop =>
       ({
-        value: prop.querySelector('.prop__value').textContent,
-        name: prop.querySelector('.prop__name').textContent
+        value: prop.classList.contains('square') ? prop.querySelector('.prop__value>span').textContent : prop.querySelector('.prop__value').textContent,
+        name: prop.querySelector('.prop__name').textContent,
+        isSquare: prop.classList.contains('square'),
       }))
     };
 
     console.log('data: ', data);
 
-    localStorage.setItem('data', JSON.stringify(data));
+    return data;
+  }
+  function saveLastData() {
+    const data = getCurrentData();
+    localStorage.setItem(LAST_DATA_KEY, JSON.stringify(data));
   }
 
-  function load() {
-    const data = JSON.parse(localStorage.getItem('data'));
-    
+  function saveInHistory() {
+    const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+    history.unshift(getCurrentData());
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }
+
+  function loadLastData() {
+    const data = JSON.parse(localStorage.getItem(LAST_DATA_KEY));
+    load(data);
+  }
+
+  function load(data) {
     setImage(img, data?.img || './apartment1.webp');
 
     if (!data) return;
@@ -181,12 +237,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.old-price__description').textContent = data.oldPriceDescription;
     data.props.forEach((prop, i) => {
       const propEl = document.querySelectorAll('.prop')[i];
-      propEl.querySelector('.prop__value').textContent = prop.value;
+      if (prop.isSquare) {
+        propEl.querySelector('.prop__value>span').textContent = prop.value;
+      }
+      else {
+        propEl.querySelector('.prop__value').textContent = prop.value;
+      }
       propEl.querySelector('.prop__name').textContent = prop.name;
     });
   }
 
-  load();
+  loadLastData();
 });
 
 
