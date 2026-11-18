@@ -154,8 +154,41 @@ document.addEventListener('DOMContentLoaded', () => {
     document.execCommand('insertText', false, text);
   });
 
+  // Paste capitalize
+  document.querySelectorAll('.capitalize[contenteditable]').forEach((el) => {
+    el.addEventListener('paste', (event) => {
+      event.preventDefault();
+      let text = event.clipboardData.getData('text');
+      if (/[a-zA-Zа-яА-Я]/.test(text[0])) {
+        text = text[0].toUpperCase() + text.slice(1);
+      }
+      document.execCommand('insertText', false, text);
+    });
+  });
+
+  // Paste Completion date
+  document.querySelector('#completionDate').addEventListener('paste', (event) => {
+    event.preventDefault();
+    let text = event.clipboardData.getData('text');
+    console.log('text: ', text);
+    text = text.replace(/(\d{1,2}) кв/, (_, quarter) => {
+      const quarterRoman = {
+        1: 'I',
+        2: 'II',
+        3: 'III',
+        4: 'IV',
+      }[quarter] || quarter;
+      return quarterRoman+ ' кв';
+    });
+
+    document.execCommand('insertText', false, text);
+  });
+
 
   document.addEventListener('input', saveLastData);
+  document.querySelectorAll('[contenteditable]').forEach((el) => el.addEventListener('blur', () => {
+    if (el.textContent === '') el.textContent = '–';
+  }));
 
   // History
   function drawHistoryList() {
@@ -201,8 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
         isSquare: prop.classList.contains('square'),
       }))
     };
-
-    console.log('data: ', data);
 
     return data;
   }
